@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
     return Element.split(' ')
   })
   res.json({message})
-  // res.render('index', {  message });
+
 });
 
 app.post("/addemployee", (req, res) => {
@@ -45,10 +45,30 @@ app.post("/addemployee", (req, res) => {
   res.json({message})
 });
 
-app.get("/getemployee/:id", async (req, res) => {
-  const name = req.params.id.slice(1);
+app.get("/getemployeebyname/:id", (req, res) => {
+  const name = req.params.id;
   const data = fs.readFileSync("./test.txt", "utf-8");
-  const lines = data.split("\n");
+  var lines = data.split("\n");
+  lines = lines.map((Element)=>{
+    return Element.split(' ')
+  })
+  console.log(name);
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i][2]!=name) {
+      console.log(i);
+      lines.splice(i, 1);
+      i--;
+    }
+  }
+ 
+  const ans = lines.join("\n").split("\n");
+  console.log(ans);
+  res.send({ ans });
+});
+app.get("/getemployeebyage/:id", (req, res) => {
+  const name = req.params.id;
+  const data = fs.readFileSync("./test.txt", "utf-8");
+  var lines = data.split("\n");
   console.log(name);
   for (let i = 0; i < lines.length; i++) {
     if (!lines[i].includes(name)) {
@@ -57,12 +77,14 @@ app.get("/getemployee/:id", async (req, res) => {
       i--;
     }
   }
+  
+
   console.log(lines);
   const ans = lines.join("\n").split("\n");
   console.log(ans);
   res.send({ ans });
 });
- 
+
 app.put("/updateemployee", (req, res) => {
   console.log("yha tk pahuch gaye he ");
     console.log(req.body)
@@ -86,23 +108,15 @@ app.delete("/deleteemployee/:id", (req, res) => {
   const data = fs.readFileSync("./test.txt", "utf-8");
   const lines = data.split("\n");
   console.log(name);
-  const len=lines.length;
-  // for (let i = 0; i < len; i++) {
-  //   if (lines[i].includes(name)) {
-  //     console.log(i);
-      
-      lines.splice(name, 1);
-      // i--;
-  //     break;
-  //   }
-  // }
+ 
+  lines.splice(name, 1);
   console.log(lines);
   const ans = lines.join("\n");
   fs.writeFileSync("./test.txt", ans);
   
   var message=ans.split("\n");
   message = message.map((Element)=>{
-    return Element.split(' ') 
+    return Element.split(' ');
   })
   res.json({message})
 }); 
