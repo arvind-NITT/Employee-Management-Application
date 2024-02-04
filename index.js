@@ -8,9 +8,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, '/')));
-// app.engine('html', require('ejs').renderFile);
-// app.set('view engine', 'html');
+
 let port = 5000;
 
 app.get("/", (req, res) => {
@@ -27,8 +25,17 @@ app.get("/", (req, res) => {
 
 app.post("/addemployee", (req, res) => {
   console.log(req.body);
-  const { name, age, dob, salary, department } = req.body.data;
-  var newrecord = `${name} ${age} ${dob} ${salary} ${department}\n`;
+  // const { name, age, dob, salary, department } = req.body.data;
+  const { name, age, dob, salary, department } = req.body;
+  var newrecord ;
+  var records = fs.readFileSync("./test.txt", "utf-8");
+  if(records.length>0)
+   newrecord = `\n${name} ${age} ${dob} ${salary} ${department}`;
+  else if(records.length==2) {
+    newrecord = `${name} ${age} ${dob} ${salary} ${department}`;
+  }else{
+    newrecord = `${name} ${age} ${dob} ${salary} ${department}\n`;
+  }
   fs.appendFileSync("./test.txt", newrecord);
 
   var records = fs.readFileSync("./test.txt", "utf-8");
@@ -94,10 +101,10 @@ app.delete("/deleteemployee/:id", (req, res) => {
   console.log(lines);
   const ans = lines.join("\n");
   fs.writeFileSync("./test.txt", ans);
-
+  
   var message=ans.split("\n");
   message = message.map((Element)=>{
-    return Element.split(' ')
+    return Element.split(' ') 
   })
   res.json({message})
 }); 
