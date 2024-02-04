@@ -25,15 +25,13 @@ app.get("/", (req, res) => {
 
 app.post("/addemployee", (req, res) => {
   console.log(req.body);
-  // const { name, age, dob, salary, department } = req.body.data;
-  const { name, age, dob, salary, department } = req.body;
+  const { name, age, dob, salary, department } = req.body.data;
+  // const { name, age, dob, salary, department } = req.body;
   var newrecord ;
   var records = fs.readFileSync("./test.txt", "utf-8");
   if(records.length>0)
    newrecord = `\n${name} ${age} ${dob} ${salary} ${department}`;
-  else if(records.length==2) {
-    newrecord = `${name} ${age} ${dob} ${salary} ${department}`;
-  }else{
+  else{
     newrecord = `${name} ${age} ${dob} ${salary} ${department}\n`;
   }
   fs.appendFileSync("./test.txt", newrecord);
